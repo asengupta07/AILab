@@ -41,7 +41,7 @@ export default function Home() {
             >
               <Particles
                 particleColors={["#6A0DAD", "#FFD700", "#00FF00"]}
-                // particleColors={["#ffffff", "#ffffff", "#ffffff"]}g
+                // particleColors={["#ffffff", "#ffffff", "#ffffff"]}
                 particleCount={900}
                 particleSpread={10}
                 speed={1}
