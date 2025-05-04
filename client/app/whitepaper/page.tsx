@@ -982,7 +982,11 @@ _________________________________________________________________`}
               best-performing model.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]">
+              <Button className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]"
+              onClick={() => {
+                window.location.href = '/game';
+              }}
+              >
                 Start the Challenge
               </Button>
               <Button
