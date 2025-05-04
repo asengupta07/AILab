@@ -26,8 +26,11 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Progress } from "@/components/ui/progress"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react"
 
 export default function Whitepaper() {
+  const [selectedModel, setSelectedModel] = useState("resnet50")
   // Model comparison data for chart
   const modelComparisonData = [
     {
@@ -430,42 +433,60 @@ export default function Whitepaper() {
             Model Architectures
           </h2>
 
-          <Tabs defaultValue="resnet50" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8 bg-gray-800/80">
-              <TabsTrigger
-                value="resnet50"
-                className="data-[state=active]:bg-cyan-900/80 data-[state=active]:text-cyan-400 text-gray-300 hover:text-white"
-              >
-                ResNet50
-              </TabsTrigger>
-              <TabsTrigger
-                value="vgg16"
-                className="data-[state=active]:bg-purple-900/80 data-[state=active]:text-purple-400 text-gray-300 hover:text-white"
-              >
-                VGG16
-              </TabsTrigger>
-              <TabsTrigger
-                value="efficientnet"
-                className="data-[state=active]:bg-pink-900/80 data-[state=active]:text-pink-400 text-gray-300 hover:text-white"
-              >
-                EfficientNetV2-B0
-              </TabsTrigger>
-              <TabsTrigger
-                value="mobilenet"
-                className="data-[state=active]:bg-cyan-900/80 data-[state=active]:text-cyan-400 text-gray-300 hover:text-white"
-              >
-                MobileNetV3Small
-              </TabsTrigger>
-            </TabsList>
+          <div className="w-full">
+            {/* Mobile Select Menu */}
+            <div className="md:hidden mb-6">
+              <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <SelectTrigger className="w-full bg-gray-800/80 text-gray-300 border-gray-700">
+                  <SelectValue placeholder="Select a model" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800/80 border-gray-700">
+                  <SelectItem value="resnet50" className="text-gray-300 hover:bg-gray-700/80">ResNet50</SelectItem>
+                  <SelectItem value="vgg16" className="text-gray-300 hover:bg-gray-700/80">VGG16</SelectItem>
+                  <SelectItem value="efficientnet" className="text-gray-300 hover:bg-gray-700/80">EfficientNetV2-B0</SelectItem>
+                  <SelectItem value="mobilenet" className="text-gray-300 hover:bg-gray-700/80">MobileNetV3Small</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-            <TabsContent value="resnet50">
-              <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
-                <div className="flex flex-col md:flex-row gap-8">
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-cyan-300">ResNet50 Architecture</h3>
-                    <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
-                      <pre className="text-gray-300">
-                        {`_________________________________________________________________
+            <Tabs value={selectedModel} onValueChange={setSelectedModel} className="w-full">
+              {/* Desktop Tabs */}
+              <TabsList className="hidden md:grid w-full grid-cols-2 md:grid-cols-4 mb-8 bg-gray-800/80">
+                <TabsTrigger
+                  value="resnet50"
+                  className="data-[state=active]:bg-cyan-900/80 data-[state=active]:text-cyan-400 text-gray-300 hover:text-white"
+                >
+                  ResNet50
+                </TabsTrigger>
+                <TabsTrigger
+                  value="vgg16"
+                  className="data-[state=active]:bg-purple-900/80 data-[state=active]:text-purple-400 text-gray-300 hover:text-white"
+                >
+                  VGG16
+                </TabsTrigger>
+                <TabsTrigger
+                  value="efficientnet"
+                  className="data-[state=active]:bg-pink-900/80 data-[state=active]:text-pink-400 text-gray-300 hover:text-white"
+                >
+                  EfficientNetV2-B0
+                </TabsTrigger>
+                <TabsTrigger
+                  value="mobilenet"
+                  className="data-[state=active]:bg-cyan-900/80 data-[state=active]:text-cyan-400 text-gray-300 hover:text-white"
+                >
+                  MobileNetV3Small
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Content */}
+              <TabsContent value="resnet50">
+                <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
+                  <div className="flex flex-col md:flex-row gap-8">
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-cyan-300">ResNet50 Architecture</h3>
+                      <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
+                        <pre className="text-gray-300">
+                          {`_________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
  input_2 (InputLayer)        [(None, 32, 32, 3)]       0         
@@ -488,72 +509,72 @@ Total params: 24136961 (92.08 MB)
 Trainable params: 24079745 (91.86 MB)
 Non-trainable params: 57216 (223.50 KB)
 _________________________________________________________________`}
-                      </pre>
+                        </pre>
+                      </div>
+                    </div>
+
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-cyan-300">Performance Metrics</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">95.99%</span>
+                            <span className="text-gray-400">Validation Accuracy</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">0.1183</span>
+                            <span className="text-gray-400">Validation Loss</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">94.61%</span>
+                            <span className="text-gray-400">Precision</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">97.55%</span>
+                            <span className="text-gray-400">Recall</span>
+                          </div>
+                        </Card>
+                      </div>
+
+                      <div className="mt-6">
+                        <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
+                        <ul className="space-y-2 text-gray-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            High recall indicates excellent ability to identify AI-generated images
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Largest model with highest parameter count (24.1M)
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+                            Requires significant computational resources for deployment
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
+                </Card>
+              </TabsContent>
 
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-cyan-300">Performance Metrics</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">95.99%</span>
-                          <span className="text-gray-400">Validation Accuracy</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">0.1183</span>
-                          <span className="text-gray-400">Validation Loss</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">94.61%</span>
-                          <span className="text-gray-400">Precision</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">97.55%</span>
-                          <span className="text-gray-400">Recall</span>
-                        </div>
-                      </Card>
-                    </div>
-
-                    <div className="mt-6">
-                      <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          High recall indicates excellent ability to identify AI-generated images
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Largest model with highest parameter count (24.1M)
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
-                          Requires significant computational resources for deployment
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="vgg16">
-              <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
-                <div className="flex flex-col md:flex-row gap-8">
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-purple-300">VGG16 Architecture</h3>
-                    <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
-                      <pre className="text-gray-300">
-                        {`Model: "model_1"
+              <TabsContent value="vgg16">
+                <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
+                  <div className="flex flex-col md:flex-row gap-8">
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-purple-300">VGG16 Architecture</h3>
+                      <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
+                        <pre className="text-gray-300">
+                          {`Model: "model_1"
 _________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
@@ -577,72 +598,72 @@ Total params: 14864577 (56.70 MB)
 Trainable params: 14863553 (56.70 MB)
 Non-trainable params: 1024 (4.00 KB)
 _________________________________________________________________`}
-                      </pre>
+                        </pre>
+                      </div>
+                    </div>
+
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-purple-300">Performance Metrics</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-purple-400">96.16%</span>
+                            <span className="text-gray-400">Validation Accuracy</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-purple-400">0.1427</span>
+                            <span className="text-gray-400">Validation Loss</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-purple-400">95.99%</span>
+                            <span className="text-gray-400">Precision</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-purple-400">96.35%</span>
+                            <span className="text-gray-400">Recall</span>
+                          </div>
+                        </Card>
+                      </div>
+
+                      <div className="mt-6">
+                        <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
+                        <ul className="space-y-2 text-gray-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Well-balanced precision and recall metrics
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Moderate parameter count (14.9M) with good performance
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+                            Higher validation loss compared to ResNet50
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
+                </Card>
+              </TabsContent>
 
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-purple-300">Performance Metrics</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-purple-400">96.16%</span>
-                          <span className="text-gray-400">Validation Accuracy</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-purple-400">0.1427</span>
-                          <span className="text-gray-400">Validation Loss</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-purple-400">95.99%</span>
-                          <span className="text-gray-400">Precision</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-purple-400">96.35%</span>
-                          <span className="text-gray-400">Recall</span>
-                        </div>
-                      </Card>
-                    </div>
-
-                    <div className="mt-6">
-                      <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Well-balanced precision and recall metrics
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Moderate parameter count (14.9M) with good performance
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
-                          Higher validation loss compared to ResNet50
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="efficientnet">
-              <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
-                <div className="flex flex-col md:flex-row gap-8">
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-pink-300">EfficientNetV2-B0 Architecture</h3>
-                    <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
-                      <pre className="text-gray-300">
-                        {`Model: "model_2"
+              <TabsContent value="efficientnet">
+                <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
+                  <div className="flex flex-col md:flex-row gap-8">
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-pink-300">EfficientNetV2-B0 Architecture</h3>
+                      <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
+                        <pre className="text-gray-300">
+                          {`Model: "model_2"
 _________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
@@ -667,72 +688,72 @@ Total params: 6268881 (23.91 MB)
 Trainable params: 6205713 (23.67 MB)
 Non-trainable params: 63168 (246.75 KB)
 _________________________________________________________________`}
-                      </pre>
+                        </pre>
+                      </div>
+                    </div>
+
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-pink-300">Performance Metrics</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-pink-400">97.13%</span>
+                            <span className="text-gray-400">Validation Accuracy</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-pink-400">0.1145</span>
+                            <span className="text-gray-400">Validation Loss</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-pink-400">97.59%</span>
+                            <span className="text-gray-400">Precision</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-pink-400">96.65%</span>
+                            <span className="text-gray-400">Recall</span>
+                          </div>
+                        </Card>
+                      </div>
+
+                      <div className="mt-6">
+                        <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
+                        <ul className="space-y-2 text-gray-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Highest overall accuracy and precision among all models
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Excellent parameter efficiency (6.3M) with superior performance
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Lowest validation loss, indicating strong generalization
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
+                </Card>
+              </TabsContent>
 
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-pink-300">Performance Metrics</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-pink-400">97.13%</span>
-                          <span className="text-gray-400">Validation Accuracy</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-pink-400">0.1145</span>
-                          <span className="text-gray-400">Validation Loss</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-pink-400">97.59%</span>
-                          <span className="text-gray-400">Precision</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-pink-400">96.65%</span>
-                          <span className="text-gray-400">Recall</span>
-                        </div>
-                      </Card>
-                    </div>
-
-                    <div className="mt-6">
-                      <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Highest overall accuracy and precision among all models
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Excellent parameter efficiency (6.3M) with superior performance
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Lowest validation loss, indicating strong generalization
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="mobilenet">
-              <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
-                <div className="flex flex-col md:flex-row gap-8">
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-cyan-300">MobileNetV3Small Architecture</h3>
-                    <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
-                      <pre className="text-gray-300">
-                        {`Model: "model_3"
+              <TabsContent value="mobilenet">
+                <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
+                  <div className="flex flex-col md:flex-row gap-8">
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-cyan-300">MobileNetV3Small Architecture</h3>
+                      <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono text-sm overflow-x-auto">
+                        <pre className="text-gray-300">
+                          {`Model: "model_3"
 _________________________________________________________________
  Layer (type)                Output Shape              Param #   
 =================================================================
@@ -757,64 +778,65 @@ Total params: 1105649 (4.22 MB)
 Trainable params: 1092385 (4.17 MB)
 Non-trainable params: 13264 (51.81 KB)
 _________________________________________________________________`}
-                      </pre>
+                        </pre>
+                      </div>
+                    </div>
+
+                    <div className="md:w-1/2">
+                      <h3 className="text-xl font-bold mb-4 text-cyan-300">Performance Metrics</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">94.69%</span>
+                            <span className="text-gray-400">Validation Accuracy</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">0.1570</span>
+                            <span className="text-gray-400">Validation Loss</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">94.06%</span>
+                            <span className="text-gray-400">Precision</span>
+                          </div>
+                        </Card>
+
+                        <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
+                          <div className="flex flex-col items-center">
+                            <span className="text-3xl font-bold text-cyan-400">95.41%</span>
+                            <span className="text-gray-400">Recall</span>
+                          </div>
+                        </Card>
+                      </div>
+
+                      <div className="mt-6">
+                        <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
+                        <ul className="space-y-2 text-gray-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Most lightweight model (1.1M parameters)
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            Ideal for mobile and edge device deployment
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+                            Lower overall performance metrics compared to other models
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="md:w-1/2">
-                    <h3 className="text-xl font-bold mb-4 text-cyan-300">Performance Metrics</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">94.69%</span>
-                          <span className="text-gray-400">Validation Accuracy</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">0.1570</span>
-                          <span className="text-gray-400">Validation Loss</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">94.06%</span>
-                          <span className="text-gray-400">Precision</span>
-                        </div>
-                      </Card>
-
-                      <Card className="bg-gray-900/30 p-4 rounded-lg border border-gray-800">
-                        <div className="flex flex-col items-center">
-                          <span className="text-3xl font-bold text-cyan-400">95.41%</span>
-                          <span className="text-gray-400">Recall</span>
-                        </div>
-                      </Card>
-                    </div>
-
-                    <div className="mt-6">
-                      <h4 className="font-semibold mb-2 text-white">Key Insights</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Most lightweight model (1.1M parameters)
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                          Ideal for mobile and edge device deployment
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <AlertTriangle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
-                          Lower overall performance metrics compared to other models
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         </section>
 
         {/* Results Comparison Section */}
