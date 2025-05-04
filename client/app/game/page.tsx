@@ -390,7 +390,17 @@ export default function GamePage() {
                 )}
               </Card>
             </div>
-
+            <div className="mt-4 p-4 bg-purple-900/20 rounded-lg border border-purple-500/30 backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-purple-300">
+                  <div className="flex items-center gap-2 pe-10">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="font-bold">Disclaimer:</span>
+                  </div>
+                  <p className="text-xs text-left">
+                    The images might look a bit blurry or pixelated - that's because we're running on a budget! Training on HD images would've cost us a fortune in compute time and storage. Think of it as an extra challenge - can you spot the AI even with lower quality images?
+                  </p>
+                </div>
+              </div>
             {/* Game Stats */}
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="bg-gray-900/50 border-gray-800 p-6 backdrop-blur-sm">
