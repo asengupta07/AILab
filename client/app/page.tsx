@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -14,6 +16,8 @@ import {
   Zap,
   ImageIcon,
   BarChart3,
+  Play,
+  FileText,
 } from "lucide-react";
 import Particles from "@/components/Particles";
 import Aurora from "@/components/Aurora";
@@ -58,13 +62,7 @@ export default function Home() {
       {/* Main content */}
       <main className="relative z-10">
         {/* Header */}
-        <header className="container mx-auto py-10 px-4 flex justify-center items-center">
-          {/* <div className="flex flex-col items-center gap-4">
-            <Brain className="h-12 w-12 text-cyan-400 animate-pulse" />
-            <span className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600 animate-gradient">
-              Real or AI?
-            </span>
-          </div> */}
+        <header className="container mx-auto mt-10 py-10 px-4 flex justify-center items-center">
           <TrueFocus 
 sentence="Real or AI?"
 manualMode={false}
@@ -76,7 +74,7 @@ pauseBetweenAnimations={1}
         </header>
 
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-20 md:py-32 flex flex-col items-center text-center">
+        <section className="container mx-auto px-4 py-20 md:py-32 flex flex-col items-center text-center h-[75dvh]">
           <Badge className="mb-6 bg-purple-900/50 text-purple-300 hover:bg-purple-900/50 border border-purple-500">
             AI Lab Assignment
           </Badge>
@@ -91,51 +89,40 @@ pauseBetweenAnimations={1}
               Are your eyes better than algorithms?
             </span>
           </p>
-          <Button className="group text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]">
-            Start the Game
-            <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <div className="flex gap-8">
+            <Button className="group text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]"
+            onClick={() => {
+              window.location.href = '/whitepaper';
+            }}
+            >
+              <FileText className="mr-2 h-5 w-5" />
+              View the Whitepaper
+              <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button className="group text-lg px-8 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]"
+            onClick={() => {
+              window.location.href = '/game';
+            }}
+            >
+              <Play className="mr-2 h-5 w-5" />
+              Start the Game
+              <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
 
-          {/* <div className="mt-16 relative w-full max-w-4xl">
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg blur-sm"></div>
-            <div className="relative bg-black rounded-lg overflow-hidden border border-gray-800">
-              <Image
-                src="/placeholder.svg?height=600&width=1200"
-                alt="Game preview"
-                width={1200}
-                height={600}
-                className="w-full h-auto object-cover rounded-lg"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent flex items-end">
-                <div className="p-6 md:p-10 w-full">
-                  <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-                    <div>
-                      <Badge className="mb-2 bg-cyan-900/50 text-cyan-300 hover:bg-cyan-900/50">
-                        AI Generated
-                      </Badge>
-                      <h3 className="text-xl md:text-2xl font-bold">
-                        Can you tell this is fake?
-                      </h3>
-                    </div>
-                    <div className="flex gap-3">
-                      <Button
-                        variant="outline"
-                        className="border-red-500 text-red-400 hover:bg-red-950 hover:text-red-300"
-                      >
-                        Fake
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="border-green-500 text-green-400 hover:bg-green-950 hover:text-green-300"
-                      >
-                        Real
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+          {/* Navigation Buttons Section */}
+          <div className="mt-8 flex flex-col md:flex-row gap-6 justify-center items-center">
+
+            <Link href="/leaderboard" className="group relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-sm opacity-50 group-hover:opacity-75 transition duration-500"></div>
+              <div className="relative px-6 py-4 bg-gray-900/50 rounded-full ring-1 ring-gray-800/50 flex items-center justify-center gap-3 hover:ring-gray-700/50 transition-all duration-300">
+                <Trophy className="h-5 w-5 text-cyan-400/80 group-hover:text-cyan-400 transition-colors" />
+                <span className="text-lg font-medium text-gray-300 group-hover:text-cyan-400 transition-colors">
+                  Leaderboard
+                </span>
               </div>
-            </div>
-          </div> */}
+            </Link>
+          </div>
         </section>
 
         {/* How It Works */}
@@ -187,94 +174,6 @@ pauseBetweenAnimations={1}
             </Card>
           </div>
         </section>
-
-        {/* Leaderboard Preview */}
-        {/* <section className="container mx-auto px-4 py-20">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
-              Leaderboard
-            </span>
-          </h2>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-lg blur-sm"></div>
-              <Card className="relative bg-gray-900/70 border-gray-800 backdrop-blur-sm">
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-white">
-                      Top Detectors
-                    </h3>
-                    <Badge className="bg-cyan-900/50 text-cyan-300 hover:bg-cyan-900/50">
-                      <Trophy className="h-4 w-4 mr-1" />
-                      Live Rankings
-                    </Badge>
-                  </div>
-
-                  <div className="space-y-4">
-                    {[
-                      { name: "AI Model X-2000", score: 92, isAI: true },
-                      { name: "PixelHunter", score: 89, isAI: false },
-                      { name: "DeepVision", score: 87, isAI: true },
-                      { name: "ImageSleuth", score: 84, isAI: false },
-                      { name: "PhotoDetective", score: 81, isAI: false },
-                    ].map((entry, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center text-sm font-bold">
-                            {index + 1}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{entry.name}</span>
-                              {entry.isAI && (
-                                <Badge
-                                  variant="outline"
-                                  className="text-xs border-cyan-500 text-cyan-400"
-                                >
-                                  <Zap className="h-3 w-3 mr-1" />
-                                  AI
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="text-xs text-gray-400">
-                              {entry.isAI
-                                ? "Machine Learning Model"
-                                : "Human Player"}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="h-2 w-24 bg-gray-700 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full"
-                              style={{ width: `${entry.score}%` }}
-                            ></div>
-                          </div>
-                          <span className="font-bold text-lg">
-                            {entry.score}%
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-6 text-center">
-                    <Button
-                      variant="outline"
-                      className="border-purple-500 text-purple-400 hover:bg-purple-950 hover:text-purple-300"
-                    >
-                      View Full Leaderboard
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section> */}
 
         {/* About the Project */}
         <section className="container mx-auto px-4 py-20">
