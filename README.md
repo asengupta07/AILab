@@ -12,48 +12,58 @@ This research project focuses on developing and evaluating deep learning models 
 ## Model Architectures
 
 ### EfficientNetV2-B0
-![EfficientNetV2-B0 Architecture](EfficientNet_model.png)
+![EfficientNetV2-B0 Architecture](https://github.com/user-attachments/assets/98d2e744-9caf-4708-9b82-c1d1c37bca6f)
+
 - **Accuracy**: 97.13%
 - **Precision**: 97.59%
 - **Recall**: 96.65%
 - **Parameters**: 6.27M
 - **Validation Loss**: 0.1145
 
-![EfficientNet Performance](efficientnet_accuracy.png)
-![EfficientNet Loss](efficientnet_loss.png)
+![image](https://github.com/user-attachments/assets/2e808e2d-65ab-46e3-be32-7c146e6621e4)
+
+]![image](https://github.com/user-attachments/assets/a20aee38-3016-458c-83c2-9438bc562044)
+
 
 ### VGG16
-![VGG16 Architecture](VGG_model.png)
+![image](https://github.com/user-attachments/assets/d76ec9b6-9013-441b-b483-431cb4f94852)
+
 - **Accuracy**: 96.16%
 - **Precision**: 95.99%
 - **Recall**: 96.35%
 - **Parameters**: 14.86M
 - **Validation Loss**: 0.1427
 
-![VGG16 Performance](vgg_accuracy.png)
-![VGG16 Loss](vgg_loss.png)
+![image](https://github.com/user-attachments/assets/1623e7a1-4f46-4f6a-8df1-1cfed323afb9)
+
+![image](https://github.com/user-attachments/assets/c2489048-abdd-443b-aaab-f97419b5cc07)
+
 
 ### ResNet50
-![ResNet50 Architecture](ResNet_model.png)
+![image](https://github.com/user-attachments/assets/fbf51569-af5b-49cd-8007-42776f2f0068)
+
 - **Accuracy**: 95.99%
 - **Precision**: 94.61%
 - **Recall**: 97.55%
 - **Parameters**: 24.14M
 - **Validation Loss**: 0.1183
 
-![ResNet50 Performance](resnet_accuracy.png)
-![ResNet50 Loss](resnet_loss.png)
+![image](https://github.com/user-attachments/assets/df8568d5-719e-4e6f-aaa4-2cb97751b8c7)
+
+![image](https://github.com/user-attachments/assets/7e299e6c-e0b1-46a5-bcf2-49dc1ec32032)
+
 
 ### MobileNetV3Small
-![MobileNetV3Small Architecture](MobileNet_model.png)
+![image](https://github.com/user-attachments/assets/2146525a-8710-458f-8846-642cd1b246e4)
 - **Accuracy**: 94.69%
 - **Precision**: 94.06%
 - **Recall**: 95.41%
 - **Parameters**: 1.11M
 - **Validation Loss**: 0.1570
 
-![MobileNetV3Small Performance](mobilenet_accuracy.png)
-![MobileNetV3Small Loss](mobilenet_loss.png)
+![image](https://github.com/user-attachments/assets/48b0a22b-fb1d-4b34-9517-de946b7d5656)
+
+![image](https://github.com/user-attachments/assets/d77810cb-e13a-48b2-ba1b-c4c16bff5544)
 
 ## Dataset
 The research utilized the CIFAKE dataset, consisting of:
