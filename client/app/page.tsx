@@ -281,13 +281,13 @@ export default function Home() {
 
               <div className="flex gap-4 sm:gap-6">
                 <Link
-                  href="#"
+                  href="https://github.com/asengupta07/AILab"
                   className="text-gray-400 hover:text-cyan-400 transition-colors"
                 >
                   <Github className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
                 <Link
-                  href="#"
+                  href="mailto:arnabsengupta104@gmail.com"
                   className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
