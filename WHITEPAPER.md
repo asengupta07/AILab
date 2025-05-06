@@ -48,13 +48,185 @@ This work bridges the technical gap through parameter-efficient CNNs, validated 
    tf.keras.layers.RandomFlip(mode="horizontal")  
    ```  
 
+### 3.2 Dataset Visualization
+Below is a 2x3 grid showcasing representative samples from our dataset, demonstrating the diversity and quality of both real and AI-generated images:
+
+![image](https://github.com/user-attachments/assets/dataset_sample_1) | ![image](https://github.com/user-attachments/assets/dataset_sample_2) | ![image](https://github.com/user-attachments/assets/dataset_sample_3)
+---|---|---
+![image](https://github.com/user-attachments/assets/dataset_sample_4) | ![image](https://github.com/user-attachments/assets/dataset_sample_5) | ![image](https://github.com/user-attachments/assets/dataset_sample_6)
+
+*Figure 13: Representative samples from the CIFAKE dataset. Top row: Real images from CIFAR-10. Bottom row: AI-generated counterparts using Stable Diffusion v1.5.*
+
 ---
 
-## 4. Hardware/Software Requirements  
-### 4.1 Hardware  
+## 4. Gamified Implementation
+### 4.1 Project Overview
+The gamified version of our AI image detection system serves multiple purposes:
+1. **Interactive Research Platform**: Enables real-time collection of human detection capabilities
+2. **Model Validation**: Provides continuous validation of our detection models against human performance
+3. **Public Engagement**: Raises awareness about AI-generated imagery and its implications
+
+### 4.2 Technical Architecture
+#### 4.2.1 Frontend Implementation
+- **Framework**: Next.js 14 with TypeScript
+- **UI Components**: Custom components built with Tailwind CSS and shadcn/ui
+- **State Management**: React Context API for global state
+- **Animation**: Framer Motion for smooth transitions and particle effects
+
+#### 4.2.2 Backend Services
+- **API Routes**: Next.js API routes for serverless functions
+- **Database**: MongoDB Atlas for storing game results and user statistics
+- **Authentication**: NextAuth.js for secure user authentication
+- **Image Processing**: Sharp for server-side image optimization
+
+#### 4.2.3 Model Deployment
+- **Inference Engine**: TensorFlow.js for client-side model inference
+- **Model Optimization**: Quantized TFLite model for reduced size and improved performance
+- **Caching**: Redis for caching model predictions and game state
+
+### 4.3 Project Structure
+```
+real-or-ai-lab/
+├── client/
+│   ├── app/
+│   │   ├── page.tsx              # Landing page
+│   │   ├── game/
+│   │   │   ├── page.tsx         # Game interface
+│   │   │   └── results.tsx      # Results display
+│   │   └── leaderboard/
+│   │       └── page.tsx         # Global leaderboard
+│   ├── components/
+│   │   ├── ui/                  # Reusable UI components
+│   │   ├── game/                # Game-specific components
+│   │   └── layout/              # Layout components
+│   └── lib/
+│       ├── utils.ts             # Utility functions
+│       └── constants.ts         # Game constants
+├── server/
+│   ├── api/
+│   │   ├── auth/               # Authentication endpoints
+│   │   ├── game/               # Game logic endpoints
+│   │   └── leaderboard/        # Leaderboard endpoints
+│   └── models/
+│       └── game.ts             # Game data models
+└── public/
+    ├── models/                 # TFLite model files
+    └── assets/                 # Static assets
+```
+
+### 4.4 Dependencies
+```json
+{
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.0.0",
+    "@tensorflow/tfjs": "4.10.0",
+    "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
+    "mongodb": "5.0.0",
+    "next-auth": "4.22.0",
+    "tailwindcss": "3.3.0",
+    "framer-motion": "10.12.0",
+    "sharp": "0.32.0",
+    "redis": "4.6.0"
+  }
+}
+```
+
+### 4.5 Game Mechanics
+1. **Core Gameplay**:
+   - Single image is presented to the user
+   - User makes a binary choice: Real or AI-generated
+   - Our deployed MobileNet model simultaneously makes its prediction
+   - Both predictions are compared against ground truth
+   - Results are immediately displayed to the user
+
+2. **Scoring System**:
+   - Tracks global statistics:
+     - Total number of matches played
+     - Total human correct predictions
+     - Total AI correct predictions
+   - Calculates success rates:
+     - Human success rate = (Total human correct / Total matches) × 100
+     - AI success rate = (Total AI correct / Total matches) × 100
+   - Head-to-head comparison between human and AI performance
+
+3. **Leaderboard Features**:
+   - Global statistics showing:
+     - Total matches played
+     - Human success rate
+     - AI success rate
+     - Head-to-head comparison
+   - Real-time updates as new matches are played
+
+### 4.6 Data Collection
+1. **Match Data**:
+   - Image identifier
+   - Ground truth label
+   - User's prediction
+   - Model's prediction
+   - Timestamp
+
+2. **Performance Metrics**:
+   - Human success rate
+   - AI success rate
+   - Total matches played
+   - Head-to-head comparison
+
+3. **Storage**:
+   - MongoDB Atlas for persistent storage
+   - Real-time updates to global statistics
+   - Efficient querying for leaderboard display
+
+### 4.7 Technical Implementation
+1. **Frontend**:
+   - Next.js 15 with App Router
+   - React for UI components
+   - Tailwind CSS for styling
+   - Client-side model inference using TensorFlow.js
+
+2. **Backend**:
+   - Next.js API routes
+   - MongoDB Atlas for data storage
+   - Serverless functions for data processing
+
+3. **Model Deployment**:
+   - MobileNet model converted to TensorFlow.js format
+   - Client-side inference for real-time predictions
+   - Optimized for web deployment
+
+### 4.8 Deployment
+- **Hosting**: Vercel for both frontend and backend
+- **Database**: MongoDB Atlas for data persistence
+- **Model**: Client-side deployment using TensorFlow.js
+
+### 4.9 Future Enhancements
+1. **Technical Improvements**:
+   - Enhanced model performance
+   - Improved user interface
+   - Additional game modes
+   - Extended dataset
+
+2. **Feature Additions**:
+   - User accounts for personal statistics
+   - Detailed match history
+   - Category-specific performance analysis
+   - Educational content about AI image generation
+
+3. **Research Expansion**:
+   - Larger dataset for more comprehensive analysis
+   - Additional model architectures
+   - Cross-cultural performance analysis
+   - Long-term trend analysis
+
+---
+
+## 5. Hardware/Software Requirements  
+### 5.1 Hardware  
 - **Training**: NVIDIA P100 GPUs (16GB VRAM), 16 vCPUs, 64GB RAM (AWS p3.2xlarge instance by Kaggle)
 
-### 4.2 Software Stack  
+### 5.2 Software Stack  
 | Component           | Version   | Purpose                          |  
 |---------------------|-----------|----------------------------------|  
 | Python              | 3.10.12   | Base language                    |  
@@ -64,8 +236,8 @@ This work bridges the technical gap through parameter-efficient CNNs, validated 
 
 ---
 
-## 5. Methodology  
-### 5.1 Architectural Details  
+## 6. Methodology  
+### 6.1 Architectural Details  
 All models employed fine-tuning of ImageNet-pre-trained backbones with identical classifier heads:  
 ```python
 x = BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001)(base_output)
@@ -83,7 +255,7 @@ outputs = Dense(1, activation='sigmoid')(x)
 - **EfficientNetV2-B0**: 5.3M backbone params, 6.27M total  
 - **MobileNetV3Small**: 1.0M backbone params, 1.11M total  
 
-### 5.2 Optimization Configuration  
+### 6.2 Optimization Configuration  
 **Shared Hyperparameters**:  
 - **Regularization**: Combined L1 (0.01) + L2 (0.01) weight decay  
 - **Dropout**: 40% rate after first dense layer  
@@ -97,7 +269,7 @@ outputs = Dense(1, activation='sigmoid')(x)
 | EfficientNetV2-B0 | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |
 | MobileNetV3Small  | Adam       | 1e-3          | 0.9| 0.999| 1e-07 |
 
-### 5.3 Training Protocol  
+### 6.3 Training Protocol  
 - **Early Stopping**: Monitor validation loss with 10-epoch patience  
 - **Batch Processing**: 500 images/batch (memory-optimized for 32x32px)  
 - **Epochs**: Maximum 100 with best weights restoration  
@@ -105,8 +277,8 @@ outputs = Dense(1, activation='sigmoid')(x)
 
 ---
 
-## 6. Comparative Analysis  
-### 6.1 Performance Metrics  
+## 7. Comparative Analysis  
+### 7.1 Performance Metrics  
 | Model               | Accuracy | Precision | Recall | Parameters | Inference Latency |  
 |---------------------|----------|-----------|--------|------------|-------------------|  
 | EfficientNetV2-B0   | 97.13%   | 97.59%    | 96.65% | 6.27M      | 18ms              |  
@@ -159,7 +331,7 @@ outputs = Dense(1, activation='sigmoid')(x)
 ---|---
 *Figure 8: MobileNetV3Small precision-recall characteristics* 
 
-### 6.2 Architectural Comparison
+### 7.2 Architectural Comparison
 
 ![image](https://github.com/user-attachments/assets/e1f3da96-9e1d-4793-baf4-f0a680d621a2) | ![image](https://github.com/user-attachments/assets/5bce4b65-2038-4c08-b183-21bbd086b162)
 ---|---
@@ -169,17 +341,17 @@ outputs = Dense(1, activation='sigmoid')(x)
 ---|---
 *Figure 11: VGG16 architecture* | *Figure 12: MobileNetV3Small architecture*
 
-### 6.3 Computational Efficiency  
+### 7.3 Computational Efficiency  
 ![image](https://github.com/user-attachments/assets/694917d9-7c88-476e-99e3-8e3c41a1d7db) *Pareto frontier analysis showing EfficientNetV2-B0's optimal balance.*  
 
 ---
 
-## 7. Practical Usage  
-### 7.1 Deployment Scenarios  
+## 8. Practical Usage  
+### 8.1 Deployment Scenarios  
 1. **Social Media Platforms**: Real-time filtering of AI-generated profile pictures (78% deepfake concern rate, The Times 2023).  
 2. **Forensic Analysis**: Chain-of-custody verification for legal evidence (30% lawsuit increase, SEO Sandwitch 2023).  
 
-### 7.2 Model Serialization  
+### 8.2 Model Serialization  
 ```python
 # SavedModel format for production  
 model.save('efficientnetv2-b0_detector.keras')  
@@ -189,7 +361,7 @@ converter = tf.lite.TFLiteConverter.from_keras_model(model)
 tflite_model = converter.convert()  
 ```
 
-### 7.3 Performance Profiling  
+### 8.3 Performance Profiling  
 **MobileNetV3Small on Edge Devices**:  
 | Device            | Latency | RAM Usage | Power Draw |
 |-------------------|---------|-----------|------------|
@@ -199,7 +371,7 @@ tflite_model = converter.convert()
 
 ---
 
-## 8. Conclusion  
+## 9. Conclusion  
 This study demonstrates that fine-tuned CNNs can outperform human discernment by 46.13% in AI image detection, with EfficientNetV2-B0 emerging as the Pareto-optimal solution. Future work must address:  
 1. **Adversarial Robustness**: Gradient masking attacks in diffusion models.  
 2. **Multimodal Fusion**: Incorporating textual artifacts from generation prompts.  
