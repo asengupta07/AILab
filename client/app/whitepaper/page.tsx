@@ -1036,10 +1036,10 @@ _________________________________________________________________`}
               </div>
 
               <div className="flex gap-6 mb-6 md:mb-0">
-                <Link href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <Link href="https://github.com/asengupta07/AILab" className="text-gray-400 hover:text-cyan-400 transition-colors">
                   <Github className="h-5 w-5" />
                 </Link>
-                <Link href="#" className="text-gray-400 hover:text-purple-400 transition-colors">
+                <Link href="mailto:arnabsengupta104@gmail.com" className="text-gray-400 hover:text-purple-400 transition-colors">
                   <Mail className="h-5 w-5" />
                 </Link>
               </div>
