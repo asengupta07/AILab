@@ -86,39 +86,41 @@ The gamified version of our AI image detection system serves multiple purposes:
 
 ### 4.3 Project Structure
 ```
-real-or-ai-lab/
+AILab/
 ├── client/
 │   ├── app/
-│   │   ├── page.tsx              # Landing page
-│   │   ├── game/
-│   │   │   ├── page.tsx         # Game interface
-│   │   │   └── results.tsx      # Results display
-│   │   └── leaderboard/
-│   │       └── page.tsx         # Global leaderboard
+│   │   ├── api/                 # API routes
+│   │   ├── game/               # Game interface
+│   │   ├── leaderboard/        # Leaderboard page
+│   │   ├── whitepaper/         # Whitepaper page
+│   │   ├── globals.css         # Global styles
+│   │   ├── layout.tsx          # Root layout
+│   │   └── page.tsx            # Landing page
 │   ├── components/
-│   │   ├── ui/                  # Reusable UI components
-│   │   ├── game/                # Game-specific components
-│   │   └── layout/              # Layout components
-│   └── lib/
-│       ├── utils.ts             # Utility functions
-│       └── constants.ts         # Game constants
-├── server/
-│   ├── api/
-│   │   ├── auth/               # Authentication endpoints
-│   │   ├── game/               # Game logic endpoints
-│   │   └── leaderboard/        # Leaderboard endpoints
-│   └── models/
-│       └── game.ts             # Game data models
-└── public/
-    ├── models/                 # TFLite model files
-    └── assets/                 # Static assets
+│   │   ├── ui/                 # Reusable UI components
+│   │   ├── Aurora.tsx          # Aurora background effect
+│   │   ├── Particles.tsx       # Particle animation
+│   │   ├── TrueFocus.tsx       # Text focus animation
+│   │   └── theme-provider.tsx  # Theme context provider
+│   ├── hooks/                  # Custom React hooks
+│   ├── lib/                    # Utility functions
+│   ├── models/                 # Database model schemas
+│   ├── public/                 # Static assets
+│   ├── styles/                 # Additional styles
+│   ├── next.config.mjs         # Next.js configuration
+│   ├── package.json           # Project dependencies
+│   ├── tailwind.config.ts     # Tailwind CSS configuration
+│   └── tsconfig.json          # TypeScript configuration
+├── assets/                    # Project assets
+├── README.md                  # Project documentation
+└── WHITEPAPER.md              # Project whitepaper
 ```
 
 ### 4.4 Dependencies
 ```json
 {
   "dependencies": {
-    "next": "14.0.0",
+    "next": "15.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.0.0",
