@@ -51,9 +51,9 @@ This work bridges the technical gap through parameter-efficient CNNs, validated 
 ### 3.2 Dataset Visualization
 Below is a 2x3 grid showcasing representative samples from our dataset, demonstrating the diversity and quality of both real and AI-generated images:
 
-![image](https://github.com/user-attachments/assets/dataset_sample_1) | ![image](https://github.com/user-attachments/assets/dataset_sample_2) | ![image](https://github.com/user-attachments/assets/dataset_sample_3)
+![image](https://github.com/user-attachments/assets/5d1ef738-bbff-4434-be14-1e5ac4418cf8) | ![image](https://github.com/user-attachments/assets/116708b6-96f6-4010-a357-c008e7f234b7) | ![image](https://github.com/user-attachments/assets/06ada105-537c-404d-85b9-b91cece02960)
 ---|---|---
-![image](https://github.com/user-attachments/assets/dataset_sample_4) | ![image](https://github.com/user-attachments/assets/dataset_sample_5) | ![image](https://github.com/user-attachments/assets/dataset_sample_6)
+![image](https://github.com/user-attachments/assets/faaa8b1d-c717-4963-aff1-7a4a625fabf2) | ![image](https://github.com/user-attachments/assets/24168912-8b9c-4728-8979-41d3aa88d25d) | ![image](https://github.com/user-attachments/assets/879be07d-ab95-4f8e-8f56-bc05c3ceecaa)
 
 *Figure 13: Representative samples from the CIFAKE dataset. Top row: Real images from CIFAR-10. Bottom row: AI-generated counterparts using Stable Diffusion v1.5.*
 
@@ -202,25 +202,6 @@ AILab/
 - **Hosting**: Vercel for both frontend and backend
 - **Database**: MongoDB Atlas for data persistence
 - **Model**: Client-side deployment using TensorFlow.js
-
-### 4.9 Future Enhancements
-1. **Technical Improvements**:
-   - Enhanced model performance
-   - Improved user interface
-   - Additional game modes
-   - Extended dataset
-
-2. **Feature Additions**:
-   - User accounts for personal statistics
-   - Detailed match history
-   - Category-specific performance analysis
-   - Educational content about AI image generation
-
-3. **Research Expansion**:
-   - Larger dataset for more comprehensive analysis
-   - Additional model architectures
-   - Cross-cultural performance analysis
-   - Long-term trend analysis
 
 ---
 
