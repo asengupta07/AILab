@@ -100,7 +100,7 @@ def build_classifier(base_model):
 - **Recall Dominance**: ResNet50's 97.55% recall makes it ideal for high-stakes false-negative minimization (e.g., deepfake detection in journalism).  
 
 ### 6.2 Computational Efficiency  
-![Figure 1: Accuracy vs. Parameter Count](placeholder_accuracy_vs_params.png) *Caption: Pareto frontier analysis showing EfficientNetV2-B0's optimal balance.*  
+![image](https://github.com/user-attachments/assets/694917d9-7c88-476e-99e3-8e3c41a1d7db) *Pareto frontier analysis showing EfficientNetV2-B0's optimal balance.*  
 
 ---
 
