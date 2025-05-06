@@ -1,3 +1,9 @@
+<style>
+body {
+    text-align: justify;
+}
+</style>
+
 ## Abstract  
 The proliferation of AI-generated imagery poses significant challenges to digital media authentication, with 71% of social media images now synthetically produced (Photoroom, 2024). This study investigates transfer learning methodologies for binary classification of AI-generated versus real images, achieving state-of-the-art detection accuracy while optimizing computational efficiency. We evaluate four convolutional neural network (CNN) architectures—ResNet50, VGG16, EfficientNetV2-B0, and MobileNetV3Small—fine-tuned on the CIFAKE dataset (60,000 images, 32×32 resolution). EfficientNetV2-B0 emerged as the optimal model with 97.13% validation accuracy, 97.59% precision, and 96.65% recall, while maintaining parameter efficiency (6.27M parameters). Comparative analysis reveals a 61% performance gap in human versus machine detection capabilities (SurveyPro, 2024), underscoring the necessity for automated solutions. The paper further discusses implications for copyright law (25% eligibility rate for AI content) and proposes adversarial training frameworks for future robustness against evolving generative models.
 
@@ -30,7 +36,8 @@ This work bridges the technical gap through parameter-efficient CNNs, validated 
 ---
 
 ## 3. Dataset Overview  
-### 3.1 CIFAKE Dataset Specifications  
+### 3.1 CIFAKE Dataset Specifications
+
 | Attribute              | Value                          |  
 |------------------------|--------------------------------|  
 | Total Samples          | 60,000 (30k real, 30k AI)     |  
@@ -48,43 +55,240 @@ This work bridges the technical gap through parameter-efficient CNNs, validated 
    tf.keras.layers.RandomFlip(mode="horizontal")  
    ```  
 
-### 3.2 Dataset Visualization
-Below is a 2x3 grid showcasing representative samples from our dataset, demonstrating the diversity and quality of both real and AI-generated images:
+### 3.2 Dataset Samples
 
-![image](https://github.com/user-attachments/assets/5d1ef738-bbff-4434-be14-1e5ac4418cf8) | ![image](https://github.com/user-attachments/assets/116708b6-96f6-4010-a357-c008e7f234b7) | ![image](https://github.com/user-attachments/assets/06ada105-537c-404d-85b9-b91cece02960)
+<img src="https://github.com/user-attachments/assets/5d1ef738-bbff-4434-be14-1e5ac4418cf8" width="300" /> | <img src="https://github.com/user-attachments/assets/116708b6-96f6-4010-a357-c008e7f234b7" width="300" /> | <img src="https://github.com/user-attachments/assets/06ada105-537c-404d-85b9-b91cece02960" width="300" />
 ---|---|---
-![image](https://github.com/user-attachments/assets/faaa8b1d-c717-4963-aff1-7a4a625fabf2) | ![image](https://github.com/user-attachments/assets/24168912-8b9c-4728-8979-41d3aa88d25d) | ![image](https://github.com/user-attachments/assets/879be07d-ab95-4f8e-8f56-bc05c3ceecaa)
+<img src="https://github.com/user-attachments/assets/faaa8b1d-c717-4963-aff1-7a4a625fabf2" width="300" /> | <img src="https://github.com/user-attachments/assets/24168912-8b9c-4728-8979-41d3aa88d25d" width="300" /> | <img src="https://github.com/user-attachments/assets/879be07d-ab95-4f8e-8f56-bc05c3ceecaa" width="300" />
 
-*Figure 13: Representative samples from the CIFAKE dataset. Top row: Real images from CIFAR-10. Bottom row: AI-generated counterparts using Stable Diffusion v1.5.*
+*Figure 1: Representative samples from the CIFAKE dataset. Top row: Real images from CIFAR-10. Bottom row: AI-generated counterparts using Stable Diffusion v1.5.*
 
 ---
 
-## 4. Gamified Implementation
-### 4.1 Project Overview
+## 4. Hardware/Software Requirements  
+### 4.1 Hardware  
+
+- **Training**: NVIDIA P100 GPUs (16GB VRAM), 16 vCPUs, 64GB RAM (AWS p3.2xlarge instance by Kaggle)
+
+### 4.2 Software Stack  
+
+| Component           | Version   | Purpose                          |  
+|---------------------|-----------|----------------------------------|  
+| Python              | 3.10.12   | Base language                    |  
+| TensorFlow          | 2.12.0    | Model training/inference         |  
+| CUDA                | 11.8      | GPU acceleration                 |  
+| cuDNN               | 8.6.0     | Deep learning primitives         |  
+
+---
+
+## 5. Methodology  
+### 5.1 Architectural Details  
+
+All models employed fine-tuning of ImageNet-pre-trained backbones with identical classifier heads:  
+
+```python
+x = BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001)(base_output)
+x = Dense(256, activation='relu', 
+          kernel_regularizer=l2(0.01), 
+          bias_regularizer=l1(0.01))(x)
+x = Dropout(0.4)(x)
+x = Dense(64, activation='relu')(x)
+outputs = Dense(1, activation='sigmoid')(x)
+```
+
+**Backbone Configurations**:  
+- **ResNet50**: 23.5M backbone params, 24.14M total  
+- **VGG16**: 14.7M backbone params, 14.86M total  
+- **EfficientNetV2-B0**: 5.3M backbone params, 6.27M total  
+- **MobileNetV3Small**: 1.0M backbone params, 1.11M total  
+
+### 5.2 Optimization Configuration  
+
+**Shared Hyperparameters**:  
+
+- **Regularization**: Combined L1 (0.01) + L2 (0.01) weight decay  
+- **Dropout**: 40% rate after first dense layer  
+- **Batch Norm**: Momentum=0.99, ε=1e-3  
+
+<div style="page-break-before: always;"></div>
+
+**Model-Specific Optimizers**:  
+
+| Model             | Optimizer  | Learning Rate | β₁ | β₂   | ε     |
+|-------------------|------------|---------------|----|------|-------|
+| ResNet50          | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |
+| VGG16             | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |  
+| EfficientNetV2-B0 | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |
+| MobileNetV3Small  | Adam       | 1e-3          | 0.9| 0.999| 1e-07 |
+
+### 5.3 Training Protocol  
+
+- **Early Stopping**: Monitor validation loss with 10-epoch patience  
+- **Batch Processing**: 500 images/batch (memory-optimized for 32x32px)  
+- **Epochs**: Maximum 100 with best weights restoration  
+- **Metric Tracking**: Real-time precision/recall monitoring  
+
+---
+
+## 6. Comparative Analysis  
+### 6.1 Performance Metrics  
+
+| Model               | Accuracy | Precision | Recall | Parameters | Inference Latency |  
+|---------------------|----------|-----------|--------|------------|-------------------|  
+| EfficientNetV2-B0   | 97.13%   | 97.59%    | 96.65% | 6.27M      | 18ms              |  
+| ResNet50            | 95.99%   | 94.61%    | 97.55% | 24.14M     | 32ms              |  
+| VGG16               | 96.16%   | 95.99%    | 96.35% | 14.86M     | 41ms              |  
+| MobileNetV3Small    | 94.69%   | 94.06%    | 95.41% | 1.11M      | 9ms               |  
+
+**Key Observations**:  
+- **Efficiency-Accuracy Tradeoff**: EfficientNetV2-B0 achieves 3.44% higher accuracy than MobileNetV3Small with only 5.16M additional parameters.  
+- **Recall Dominance**: ResNet50's 97.55% recall makes it ideal for high-stakes false-negative minimization (e.g., deepfake detection in journalism).
+
+**Implementation Insights**:  
+- **Optimizer Impact**: Adamax showed 1.2% accuracy gain over Adam in preliminary tests  
+- **Regularization Efficacy**: L1/L2 combo reduced overfitting by 18% (train-val gap)  
+- **Memory Footprint**: Batch size 500 achieved 89% GPU utilization on P100 
+
+
+<div style="page-break-before: always;"></div>
+
+#### Training Dynamics Visualization
+
+![image](https://github.com/user-attachments/assets/19ad52e8-3a41-4fda-bf68-52dac220ce24) | ![image](https://github.com/user-attachments/assets/73d5843b-a6b6-4bee-9999-6ef1946482f2)
+---|---
+
+*Figure 2: EfficientNetV2-B0 training metrics* 
+
+
+![image](https://github.com/user-attachments/assets/f075e274-3762-4e52-b002-43d14adc064c) | ![image](https://github.com/user-attachments/assets/427a2957-eee9-4610-90ab-ec5f4349c489)
+---|---
+
+*Figure 3: ResNet50 training metrics* 
+
+
+![image](https://github.com/user-attachments/assets/64d9789b-b927-437b-a7cf-6cf9ab6502a1) | ![image](https://github.com/user-attachments/assets/e5aacad6-9e77-44db-ac60-7e08c7dbec18)
+---|---
+
+*Figure 4: VGG16 training metrics* 
+
+<div style="page-break-before: always;"></div>
+
+![image](https://github.com/user-attachments/assets/81b310ad-4107-43e7-816f-a4f59fb0b06e) | ![image](https://github.com/user-attachments/assets/b7bf714c-bccd-447c-a2ff-b67f97bce6ff)
+---|---
+
+*Figure 5: MobileNetV3Small training metrics* 
+
+
+#### Precision-Recall Analysis
+
+![image](https://github.com/user-attachments/assets/7a5dd02e-32a1-4a42-a08b-56bd3b48494a) | ![image](https://github.com/user-attachments/assets/6a701652-4bc6-4e97-b2a0-77869df91598)
+---|---
+
+*Figure 6: EfficientNetV2-B0 precision-recall characteristics* 
+
+
+![image](https://github.com/user-attachments/assets/f35b6564-2961-449d-a9a1-70ff1a2c786e) | ![image](https://github.com/user-attachments/assets/92649d92-c22d-4de9-a9a9-dc653c6256f9)
+---|---
+
+*Figure 7: ResNet50 precision-recall characteristics* 
+
+<div style="page-break-before: always;"></div>
+
+![image](https://github.com/user-attachments/assets/6cebe619-3fcf-4e4d-ad36-5fbbd4a81890) | ![image](https://github.com/user-attachments/assets/6a1ce2fd-2b22-4bb4-a605-ce214c184769)
+---|---
+
+*Figure 8: VGG16 precision-recall characteristics* 
+
+
+![image](https://github.com/user-attachments/assets/b5376e18-ac70-4065-ac7a-76891ccc8612) | ![image](https://github.com/user-attachments/assets/6c073d42-a657-4327-bba7-d779bfc99646)
+---|---
+
+*Figure 9: MobileNetV3Small precision-recall characteristics* 
+
+
+### 6.2 Architectural Comparison
+<div style="display: flex; justify-content: center; gap: 2%;">
+  <div style="width: 49%; text-align: center;">
+    <img src="https://github.com/user-attachments/assets/e1f3da96-9e1d-4793-baf4-f0a680d621a2" height="260px" style="object-fit: contain;" />
+    <p><em>Figure 10: EfficientNetV2-B0 architecture</em></p>
+  </div>
+  <div style="width: 49%; text-align: center;">
+    <img src="https://github.com/user-attachments/assets/5bce4b65-2038-4c08-b183-21bbd086b162" height="260px" style="object-fit: contain;" />
+    <p><em>Figure 11: ResNet50 architecture</em></p>
+  </div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 2%; margin-top: 20px;">
+  <div style="width: 49%; text-align: center;">
+    <img src="https://github.com/user-attachments/assets/d6ce46a1-d544-40a1-9c1d-70e01c2fe98f" height="280px" style="object-fit: contain;" />
+    <p><em>Figure 12: VGG16 architecture</em></p>
+  </div>
+  <div style="width: 49%; text-align: center;">
+    <img src="https://github.com/user-attachments/assets/9dc91681-5847-4d40-94b4-0d46998d680f" height="280px" style="object-fit: contain;" />
+    <p><em>Figure 13: MobileNetV3Small architecture</em></p>
+  </div>
+</div>
+
+### 6.3 Computational Efficiency 
+
+![image](https://github.com/user-attachments/assets/694917d9-7c88-476e-99e3-8e3c41a1d7db) *Figure 14: Pareto frontier analysis showing EfficientNetV2-B0's optimal balance.*  
+
+---
+
+<div style="page-break-before: always;"></div>
+
+## 7. Practical Usage  
+### 7.1 Deployment Scenarios  
+1. **Social Media Platforms**: Real-time filtering of AI-generated profile pictures (78% deepfake concern rate, The Times 2023).  
+2. **Forensic Analysis**: Chain-of-custody verification for legal evidence (30% lawsuit increase, SEO Sandwitch 2023).  
+
+### 7.2 Model Serialization  
+```python
+# SavedModel format for production  
+model.save('efficientnetv2-b0_detector.keras')  
+
+# TFLite conversion for edge devices  
+converter = tf.lite.TFLiteConverter.from_keras_model(model)  
+tflite_model = converter.convert()  
+```
+
+### 7.3 Performance Profiling  
+**MobileNetV3Small on Edge Devices**:  
+
+| Device            | Latency | RAM Usage | Power Draw |
+|-------------------|---------|-----------|------------|
+| Raspberry Pi 4B   | 142ms   | 78MB      | 2.1W       |
+| Google Coral TPU  | 19ms    | 52MB      | 0.8W       |
+| iPhone 14 Pro     | 27ms    | 65MB      | 1.3W       |
+
+---
+
+## 8. Gamified Implementation
+### 8.1 Project Overview
 The gamified version of our AI image detection system serves multiple purposes:
 1. **Interactive Research Platform**: Enables real-time collection of human detection capabilities
 2. **Model Validation**: Provides continuous validation of our detection models against human performance
 3. **Public Engagement**: Raises awareness about AI-generated imagery and its implications
 
-### 4.2 Technical Architecture
-#### 4.2.1 Frontend Implementation
+### 8.2 Technical Architecture
+#### 8.2.1 Frontend Implementation
 - **Framework**: Next.js 14 with TypeScript
 - **UI Components**: Custom components built with Tailwind CSS and shadcn/ui
 - **State Management**: React Context API for global state
 - **Animation**: Framer Motion for smooth transitions and particle effects
 
-#### 4.2.2 Backend Services
+#### 8.2.2 Backend Services
 - **API Routes**: Next.js API routes for serverless functions
 - **Database**: MongoDB Atlas for storing game results and user statistics
 - **Authentication**: NextAuth.js for secure user authentication
 - **Image Processing**: Sharp for server-side image optimization
 
-#### 4.2.3 Model Deployment
+#### 8.2.3 Model Deployment
 - **Inference Engine**: TensorFlow.js for client-side model inference
 - **Model Optimization**: Quantized TFLite model for reduced size and improved performance
 - **Caching**: Redis for caching model predictions and game state
 
-### 4.3 Project Structure
+### 8.3 Project Structure
 ```
 AILab/
 ├── client/
@@ -116,7 +320,7 @@ AILab/
 └── WHITEPAPER.md              # Project whitepaper
 ```
 
-### 4.4 Dependencies
+### 8.4 Dependencies
 ```json
 {
   "dependencies": {
@@ -136,7 +340,7 @@ AILab/
 }
 ```
 
-### 4.5 Game Mechanics
+### 8.5 Game Mechanics
 1. **Core Gameplay**:
    - Single image is presented to the user
    - User makes a binary choice: Real or AI-generated
@@ -162,7 +366,7 @@ AILab/
      - Head-to-head comparison
    - Real-time updates as new matches are played
 
-### 4.6 Data Collection
+### 8.6 Data Collection
 1. **Match Data**:
    - Image identifier
    - Ground truth label
@@ -181,7 +385,7 @@ AILab/
    - Real-time updates to global statistics
    - Efficient querying for leaderboard display
 
-### 4.7 Technical Implementation
+### 8.7 Technical Implementation
 1. **Frontend**:
    - Next.js 15 with App Router
    - React for UI components
@@ -198,164 +402,17 @@ AILab/
    - Client-side inference for real-time predictions
    - Optimized for web deployment
 
-### 4.8 Deployment
+### 8.8 Deployment
+
 - **Hosting**: Vercel for both frontend and backend
 - **Database**: MongoDB Atlas for data persistence
 - **Model**: Client-side deployment using TensorFlow.js
 
 ---
 
-## 5. Hardware/Software Requirements  
-### 5.1 Hardware  
-- **Training**: NVIDIA P100 GPUs (16GB VRAM), 16 vCPUs, 64GB RAM (AWS p3.2xlarge instance by Kaggle)
-
-### 5.2 Software Stack  
-| Component           | Version   | Purpose                          |  
-|---------------------|-----------|----------------------------------|  
-| Python              | 3.10.12   | Base language                    |  
-| TensorFlow          | 2.12.0    | Model training/inference         |  
-| CUDA                | 11.8      | GPU acceleration                 |  
-| cuDNN               | 8.6.0     | Deep learning primitives         |  
-
----
-
-## 6. Methodology  
-### 6.1 Architectural Details  
-All models employed fine-tuning of ImageNet-pre-trained backbones with identical classifier heads:  
-```python
-x = BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001)(base_output)
-x = Dense(256, activation='relu', 
-          kernel_regularizer=l2(0.01), 
-          bias_regularizer=l1(0.01))(x)
-x = Dropout(0.4)(x)
-x = Dense(64, activation='relu')(x)
-outputs = Dense(1, activation='sigmoid')(x)
-```
-
-**Backbone Configurations**:  
-- **ResNet50**: 23.5M backbone params, 24.14M total  
-- **VGG16**: 14.7M backbone params, 14.86M total  
-- **EfficientNetV2-B0**: 5.3M backbone params, 6.27M total  
-- **MobileNetV3Small**: 1.0M backbone params, 1.11M total  
-
-### 6.2 Optimization Configuration  
-**Shared Hyperparameters**:  
-- **Regularization**: Combined L1 (0.01) + L2 (0.01) weight decay  
-- **Dropout**: 40% rate after first dense layer  
-- **Batch Norm**: Momentum=0.99, ε=1e-3  
-
-**Model-Specific Optimizers**:  
-| Model             | Optimizer  | Learning Rate | β₁ | β₂   | ε     |
-|-------------------|------------|---------------|----|------|-------|
-| ResNet50          | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |
-| VGG16             | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |  
-| EfficientNetV2-B0 | Adamax     | 1e-3          | 0.9| 0.999| 1e-07 |
-| MobileNetV3Small  | Adam       | 1e-3          | 0.9| 0.999| 1e-07 |
-
-### 6.3 Training Protocol  
-- **Early Stopping**: Monitor validation loss with 10-epoch patience  
-- **Batch Processing**: 500 images/batch (memory-optimized for 32x32px)  
-- **Epochs**: Maximum 100 with best weights restoration  
-- **Metric Tracking**: Real-time precision/recall monitoring  
-
----
-
-## 7. Comparative Analysis  
-### 7.1 Performance Metrics  
-| Model               | Accuracy | Precision | Recall | Parameters | Inference Latency |  
-|---------------------|----------|-----------|--------|------------|-------------------|  
-| EfficientNetV2-B0   | 97.13%   | 97.59%    | 96.65% | 6.27M      | 18ms              |  
-| ResNet50            | 95.99%   | 94.61%    | 97.55% | 24.14M     | 32ms              |  
-| VGG16               | 96.16%   | 95.99%    | 96.35% | 14.86M     | 41ms              |  
-| MobileNetV3Small    | 94.69%   | 94.06%    | 95.41% | 1.11M      | 9ms               |  
-
-**Key Observations**:  
-- **Efficiency-Accuracy Tradeoff**: EfficientNetV2-B0 achieves 3.44% higher accuracy than MobileNetV3Small with only 5.16M additional parameters.  
-- **Recall Dominance**: ResNet50's 97.55% recall makes it ideal for high-stakes false-negative minimization (e.g., deepfake detection in journalism).
-
-**Implementation Insights**:  
-- **Optimizer Impact**: Adamax showed 1.2% accuracy gain over Adam in preliminary tests  
-- **Regularization Efficacy**: L1/L2 combo reduced overfitting by 18% (train-val gap)  
-- **Memory Footprint**: Batch size 500 achieved 89% GPU utilization on P100  
-
-#### Training Dynamics Visualization
-
-![image](https://github.com/user-attachments/assets/19ad52e8-3a41-4fda-bf68-52dac220ce24) | ![image](https://github.com/user-attachments/assets/73d5843b-a6b6-4bee-9999-6ef1946482f2)
----|---
-*Figure 1: EfficientNetV2-B0 training metrics* 
-
-![image](https://github.com/user-attachments/assets/f075e274-3762-4e52-b002-43d14adc064c) | ![image](https://github.com/user-attachments/assets/427a2957-eee9-4610-90ab-ec5f4349c489)
----|---
-*Figure 2: ResNet50 training metrics* 
-
-![image](https://github.com/user-attachments/assets/64d9789b-b927-437b-a7cf-6cf9ab6502a1) | ![image](https://github.com/user-attachments/assets/e5aacad6-9e77-44db-ac60-7e08c7dbec18)
----|---
-*Figure 3: VGG16 training metrics* 
-
-![image](https://github.com/user-attachments/assets/81b310ad-4107-43e7-816f-a4f59fb0b06e) | ![image](https://github.com/user-attachments/assets/b7bf714c-bccd-447c-a2ff-b67f97bce6ff)
----|---
-*Figure 4: MobileNetV3Small training metrics* 
-
-#### Precision-Recall Analysis
-
-![image](https://github.com/user-attachments/assets/7a5dd02e-32a1-4a42-a08b-56bd3b48494a) | ![image](https://github.com/user-attachments/assets/6a701652-4bc6-4e97-b2a0-77869df91598)
----|---
-*Figure 5: EfficientNetV2-B0 precision-recall characteristics* 
-
-![image](https://github.com/user-attachments/assets/f35b6564-2961-449d-a9a1-70ff1a2c786e) | ![image](https://github.com/user-attachments/assets/92649d92-c22d-4de9-a9a9-dc653c6256f9)
----|---
-*Figure 6: ResNet50 precision-recall characteristics* 
-
-![image](https://github.com/user-attachments/assets/6cebe619-3fcf-4e4d-ad36-5fbbd4a81890) | ![image](https://github.com/user-attachments/assets/6a1ce2fd-2b22-4bb4-a605-ce214c184769)
----|---
-*Figure 7: VGG16 precision-recall characteristics* 
-
-![image](https://github.com/user-attachments/assets/b5376e18-ac70-4065-ac7a-76891ccc8612) | ![image](https://github.com/user-attachments/assets/6c073d42-a657-4327-bba7-d779bfc99646)
----|---
-*Figure 8: MobileNetV3Small precision-recall characteristics* 
-
-### 7.2 Architectural Comparison
-
-![image](https://github.com/user-attachments/assets/e1f3da96-9e1d-4793-baf4-f0a680d621a2) | ![image](https://github.com/user-attachments/assets/5bce4b65-2038-4c08-b183-21bbd086b162)
----|---
-*Figure 9: EfficientNetV2-B0 architecture* | *Figure 10: ResNet50 architecture*
-
-![image](https://github.com/user-attachments/assets/d6ce46a1-d544-40a1-9c1d-70e01c2fe98f) | ![image](https://github.com/user-attachments/assets/9dc91681-5847-4d40-94b4-0d46998d680f)
----|---
-*Figure 11: VGG16 architecture* | *Figure 12: MobileNetV3Small architecture*
-
-### 7.3 Computational Efficiency  
-![image](https://github.com/user-attachments/assets/694917d9-7c88-476e-99e3-8e3c41a1d7db) *Pareto frontier analysis showing EfficientNetV2-B0's optimal balance.*  
-
----
-
-## 8. Practical Usage  
-### 8.1 Deployment Scenarios  
-1. **Social Media Platforms**: Real-time filtering of AI-generated profile pictures (78% deepfake concern rate, The Times 2023).  
-2. **Forensic Analysis**: Chain-of-custody verification for legal evidence (30% lawsuit increase, SEO Sandwitch 2023).  
-
-### 8.2 Model Serialization  
-```python
-# SavedModel format for production  
-model.save('efficientnetv2-b0_detector.keras')  
-
-# TFLite conversion for edge devices  
-converter = tf.lite.TFLiteConverter.from_keras_model(model)  
-tflite_model = converter.convert()  
-```
-
-### 8.3 Performance Profiling  
-**MobileNetV3Small on Edge Devices**:  
-| Device            | Latency | RAM Usage | Power Draw |
-|-------------------|---------|-----------|------------|
-| Raspberry Pi 4B   | 142ms   | 78MB      | 2.1W       |
-| Google Coral TPU  | 19ms    | 52MB      | 0.8W       |
-| iPhone 14 Pro     | 27ms    | 65MB      | 1.3W       |
-
----
-
 ## 9. Conclusion  
 This study demonstrates that fine-tuned CNNs can outperform human discernment by 46.13% in AI image detection, with EfficientNetV2-B0 emerging as the Pareto-optimal solution. Future work must address:  
+
 1. **Adversarial Robustness**: Gradient masking attacks in diffusion models.  
 2. **Multimodal Fusion**: Incorporating textual artifacts from generation prompts.  
 3. **Ethical Frameworks**: Standardized disclosure protocols for synthetic media.  
@@ -363,7 +420,6 @@ This study demonstrates that fine-tuned CNNs can outperform human discernment by
 **Codebase Architecture**:  
 - **Modular Design**: Shared preprocessing pipeline across models  
 - **Reproducibility**: Fixed random seeds (512) for dataset splitting  
-- **Visualization**: Integrated model graph generation (PNG) and metric plotting  
 
 **Lessons Learned**:  
 1. Higher-capacity models (EfficientNet) benefit more from aggressive regularization  
@@ -371,4 +427,5 @@ This study demonstrates that fine-tuned CNNs can outperform human discernment by
 3. 40% dropout proves optimal for preventing co-adaptation in classifier head  
 
 The notebook containing all the code and other assets are available at: [https://github.com/asengupta07/AILab](https://github.com/asengupta07/AILab).
-A gamified version of the project is deployed at: [https://real-or-ai-lab.vercel.app](https://real-or-ai-lab.vercel.app).
+
+The gamified version of the project is deployed at: [https://real-or-ai-lab.vercel.app](https://real-or-ai-lab.vercel.app).
