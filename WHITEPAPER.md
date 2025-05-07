@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/5934526a-b7cd-4763-88e6-f6d4ec4c041b)
+
+
 ## Abstract  
 The proliferation of AI-generated imagery poses significant challenges to digital media authentication, with 71% of social media images now synthetically produced (Photoroom, 2024). This study investigates transfer learning methodologies for binary classification of AI-generated versus real images, achieving state-of-the-art detection accuracy while optimizing computational efficiency. We evaluate four convolutional neural network (CNN) architectures—ResNet50, VGG16, EfficientNetV2-B0, and MobileNetV3Small—fine-tuned on the CIFAKE dataset (60,000 images, 32×32 resolution). EfficientNetV2-B0 emerged as the optimal model with 97.13% validation accuracy, 97.59% precision, and 96.65% recall, while maintaining parameter efficiency (6.27M parameters). Comparative analysis reveals a 61% performance gap in human versus machine detection capabilities (SurveyPro, 2024), underscoring the necessity for automated solutions. The paper further discusses implications for copyright law (25% eligibility rate for AI content) and proposes adversarial training frameworks for future robustness against evolving generative models.
 
