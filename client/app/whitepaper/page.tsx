@@ -133,7 +133,10 @@ export default function Whitepaper() {
             A comprehensive analysis of transfer learning approaches for detecting AI-generated imagery
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button className="group text-lg px-6 py-5 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]">
+            <Button 
+              className="group text-lg px-6 py-5 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(8,145,178,0.5)]"
+              onClick={() => window.open('https://drive.google.com/file/d/1VZ91eJjMuJZKQfBluXrwSpFMBeWnIz77/view?usp=sharing', '_blank')}
+            >
               <Download className="mr-2 h-5 w-5" />
               Download Full Paper
             </Button>
